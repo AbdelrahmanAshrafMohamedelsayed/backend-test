@@ -24,7 +24,7 @@ productRouter.route('/').get(getAllProduct).post(protect, restrictTo('admin'), c
 //         restrictTo('admin'),
 //         deleteProduct
 //     );
-productRouter.route('/:id').get(getProduct).patch(protect, restrictTo('admin'), updateProduct).delete(protect, restrictTo('admin'), deleteProduct);
+productRouter.route('/:id').get(getProduct).put(protect, restrictTo('admin'), updateProduct).delete(protect, restrictTo('admin'), deleteProduct);
 
 
 export default productRouter;

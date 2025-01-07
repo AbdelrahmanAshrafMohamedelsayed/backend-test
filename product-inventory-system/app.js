@@ -88,8 +88,8 @@ app.use((req, res, next) => {
 // app.use('/api/v1/products', productRouter);
 console.log('Mounting user routes...');
 
-app.use('/api/v1/auth', userRouter);
-app.use('/api/v1/products', productRouter);
+app.use('/auth', userRouter);
+app.use('/products', productRouter);
 
 // 4) Handling Unhandled Routes
 // Handles requests to undefined routes.
