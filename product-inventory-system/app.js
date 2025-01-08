@@ -1,23 +1,22 @@
-import rateLimit from 'express-rate-limit';
-import mongoSanitize from 'express-mongo-sanitize';
-import hpp from 'hpp';
-import xss from 'xss-clean';
-import morgan from 'morgan';
-import express from 'express';
-import helmet from 'helmet';
-import { AppError } from './util/ErrorHandling.js';
-import compression from 'compression';
-import cors from 'cors';
-import ErrorHandlingFunc from './controllers/errorControllers.js';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-import path from 'path';
-import userRouter from './routes/userRoutes.js';
-import productRouter from './routes/productRoutes.js';
+import rateLimit from "express-rate-limit";
+import mongoSanitize from "express-mongo-sanitize";
+import xss from "xss-clean";
+import morgan from "morgan";
+import express from "express";
+import helmet from "helmet";
+import { AppError } from "./utils/ErrorHandling.js";
+import compression from "compression";
+import cors from "cors";
+import ErrorHandlingFunc from "./controllers/errorControllers.js";
+import { fileURLToPath } from "url";
+import { dirname } from "path";
+import path from "path";
+import userRouter from "./routes/userRoutes.js";
+import productRouter from "./routes/productRoutes.js";
 const app = express();
 
 app.use(cors());
-app.options('*', cors());
+app.options("*", cors());
 // 1) GLOBAL MIDDLEWARES
 // Set security HTTP headers
 // 1) should be the first middleware to include the security headers
@@ -27,22 +26,21 @@ app.options('*', cors());
 app.use(helmet());
 
 // Development logging
-if (process.env.NODE_ENV === 'development') {
+if (process.env.NODE_ENV === "development") {
     // morgan: HTTP request logger middleware for node.js . Logs detailed request information (method, status, response time, etc.) in development mode.
-    app.use(morgan('dev'));
+    app.use(morgan("dev"));
 } else {
     // console.log('production');
 }
-// // Limit requests from same API (IP)
-// const limiter = rateLimit({
-//     max: 100, // 100 requests per hour
-//     windowMs: 60 * 60 * 1000, // 1 hour
-//     message: 'Too many requests from this IP, please try again in an hour!' // error message
-// });
-// app.use('/api', limiter); // apply the limiter middleware to all routes starting with /api
+const limiter = rateLimit({
+    max: 1000, // 100 requests per hour
+    windowMs: 60 * 60 * 1000, // 1 hour
+    message: "Too many requests from this IP, please try again in an hour!", // error message
+});
+app.use("/api", limiter); // apply the limiter middleware to all routes starting with /api
 
 // Body parser, reading data from body into req.body (limit the size of the body to 10kb) (prevent DOS attacks) (prevent sending huge payload to the server)
-app.use(express.json({ limit: '10kb' })); // here we read the data from the body and parse it to json and put it in req.body
+app.use(express.json({ limit: "10kb" })); // here we read the data from the body and parse it to json and put it in req.body
 //  we need to clean the data in the body from any malicious code (prevent NoSQL injection)
 // then we need to clean the data from any malicious html code (prevent XSS attacks)
 //  we need data sanitization against parameter pollution (prevent duplicate query strings)
@@ -78,22 +76,19 @@ app.use(xss());
 const __filename = fileURLToPath(
     import.meta.url);
 const __dirname = dirname(__filename);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 app.use(compression()); // compress all the text that is sent to the client (html, css, js, json, etc...) not images
 app.use((req, res, next) => {
     req.requestTime = new Date().toISOString();
     next();
 });
 // 3) ROUTES
-// app.use('/api/v1/products', productRouter);
-console.log('Mounting user routes...');
-
-app.use('/auth', userRouter);
-app.use('/products', productRouter);
+app.use("/auth", userRouter);
+app.use("/products", productRouter);
 
 // 4) Handling Unhandled Routes
 // Handles requests to undefined routes.
-app.all('*', (req, res, next) => {
+app.all("*", (req, res, next) => {
     next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 // 5) Error Handling Middleware

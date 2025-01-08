@@ -11,7 +11,7 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: [true, 'A user must have an email'],
         unique: [true, 'This email is already taken'],
-        lowercase: true, // convert to lowercase
+        lowercase: true,
         validate: [validator.isEmail, 'Please provide a valid email']
     },
     role: {

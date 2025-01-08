@@ -1,12 +1,14 @@
-import express from 'express';
-import { login, signup } from '../controllers/authControllers.js';
+import express from "express";
+import { login, signup } from "../controllers/authControllers.js";
+import {
+    loginValidator,
+    signupValidator,
+} from "../validators/userValidator.js";
+import { validateRequest } from "../middleware/validateRequest.js";
 
 const userRouter = express.Router();
 
-userRouter.post('/signup', signup); // Will match /api/v1/auth/signup
-userRouter.post('/login', login);
+userRouter.post("/signup", signupValidator, validateRequest, signup);
+userRouter.post("/login", loginValidator, validateRequest, login);
 
-// Protect all routes after this middleware to be accessed only by logged in users
-// userRouter.use(protect);
-// module.exports = userRouter;
 export default userRouter;

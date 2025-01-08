@@ -13,7 +13,6 @@ class APIFeatures {
             /\b(gte|gt|lte|lt)\b/g,
             match => `$${match}`
         );
-        // console.log(JSON.parse(queryStrWithDollarSign));
         const queryObjWithDollarSign = JSON.parse(queryStrWithDollarSign); // convert the string to an object
         this.query = this.query.find(queryObjWithDollarSign); // find the documents that match the query object
         return this; // return the object to be able to chain the methods
@@ -22,7 +21,6 @@ class APIFeatures {
         // 2) SORTING
         if (this.queryString.sort) { // if there is a sort query in the url
             const sortBy = this.queryString.sort.split(',').join(' '); // sort('price ratingsAverage'). the sort method will sort the documents based on the price and then the ratingsAverage
-            // console.log(sortBy);
             this.query = this.query.sort(sortBy); // sort the documents based on the sortBy
         } else {
             this.query = this.query.sort('-createdAt'); // sort the documents based on the createdAt field in descending order

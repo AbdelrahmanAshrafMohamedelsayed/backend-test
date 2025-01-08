@@ -1,5 +1,11 @@
 import product from "../models/productModel.js";
-import { createOne, deleteOne, getAll, getOne, updateOne } from "./handlerFactory.js";
+import {
+    createOne,
+    deleteOne,
+    getAll,
+    getOne,
+    updateOne,
+} from "./handlerFactory.js";
 
 export const getAllProduct = getAll(product);
 export const createProduct = createOne(product);
