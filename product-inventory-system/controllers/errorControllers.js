@@ -30,17 +30,19 @@ const handleJWTError = () => {
 };
 const handleExpireError = () => {
     return new AppError("Your token has expired! Please log in again.", 401);
-};
-const sendErrorDev = (err, res) => {
-    res.status(err.statusCode).json({
+}; 
+const sendErrorDev = (err, res) => { // Development Error Handling
+    res.status(err.statusCode).json({ // send the error to the client
         status: err.status,
         message: err.message,
         error: err,
-        stack: err.stack,
+        stack: err.stack, // stack trace
     });
 };
 const sendErrorProd = (err, res) => {
     // Operational, trusted error: send message to client
+    // if operational (i.e., expected, like validation errors), it sends the error's message.
+    // if it's a programming or other unknown error, it sends a generic message.
     if (err.isOperational) {
         res.status(err.statusCode).json({
             status: err.status,

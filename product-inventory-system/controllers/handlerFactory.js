@@ -68,7 +68,7 @@ export const getAll = (Model) =>
         const Docs = await features.query; // execute the query to get the products from the collection 'Model'
         // to send the number of pages to the client to be used in the pagination
         const numberOfpages = Math.ceil(
-            (await Model.countDocuments()) / (req.query.limit || 100)
+            (await Model.countDocuments()) / (req.query.limit || 10)
         );
         res.status(200).json({
             status: "success",

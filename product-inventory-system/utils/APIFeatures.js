@@ -1,13 +1,13 @@
 class APIFeatures {
     constructor(query, queryString) {
         this.query = query; // the query is a query object that is not executed yet in this case it is  after filtering
-        this.queryString = queryString; // the query string is the query string that is sent in the url
+        this.queryString = queryString; // the query string is the query string that is sent in the url like the sort, limit, page, fields
     }
     filter() { // 1A) FILTERING example: /api/v1/tours?duration[gte]=5&difficulty=easy (filter based on fields)
         const queryObj = {...this.queryString };
         const excluded_fields = ['page', 'sort', 'limit', 'fields']; // exclude these fields from the query as they are not fields in the document
         excluded_fields.forEach(el => delete queryObj[el]); // delete the excluded fields from the query
-        //  1B) ADVANCED FILTERING
+        //  1B) ADVANCED FILTERING duration[gte]=5 becomes { "duration": { "$gte": 5 } }
         const queryStr = JSON.stringify(queryObj); // convert the query object to a string to be able to use the regular expression
         const queryStrWithDollarSign = queryStr.replace( // replace the gte, gt, lte, lt with $gte, $gt, $lte, $lt
             /\b(gte|gt|lte|lt)\b/g,
@@ -46,7 +46,7 @@ class APIFeatures {
         this.query = this.query.skip(skip).limit(limit); // skip the documents that are before the current page and limit the documents to the limit
         /**
          *  query = query.skip(skip).limit(limit);
-         * is used to implement pagination if there was no page query in the url then the query will be like this: query = query.skip(0).limit(100); as default page=1 and limit=100
+         * is used to implement pagination if there was no page query in the url then the query will be like this: query = query.skip(0).limit(10); as default page=1 and limit=10
          */
         return this;
     }

@@ -41,9 +41,7 @@ userSchema.pre('save', async function(next) {
     // Hash the password with cost of 12
     this.password = await bcrypt.hash(this.password, 12); // we don't need to save it in the database as it is already will be saved in the database
 
-    // Delete passwordConfirm field // we don't need to save it in the database
-    //  undefined is used to delete a field from the document in database
-    this.passwordConfirm = undefined;
+    // this.passwordConfirm = undefined;
     next();
 });
 userSchema.methods.correctPassword = async function(
